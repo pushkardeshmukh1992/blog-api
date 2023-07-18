@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 //@access public
 
 const User = require("../../model/User/User");
+const generateToken = require("../../utils/generateToken");
 
 exports.register = async (req, res) => {
   try {
@@ -41,6 +42,48 @@ exports.register = async (req, res) => {
       //   email: newUser?.email,
       //   role: newUser?.role,
       newUser,
+    });
+  } catch (error) {
+    res.json({
+      status: "failed",
+      message: error?.message,
+    });
+  }
+};
+
+//@desc Login user
+//@route POST /api/v1/users/login
+//@access public
+
+exports.login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      throw new Error("Invalid login credentials");
+    }
+
+    //compare the hashed password with the one the request
+    const isMatched = await bcrypt.compare(password, user.password);
+
+    if (!isMatched) {
+      throw new Error("Invalid login credentials");
+    }
+
+    //Update last login
+    user.lastLogin = new Date();
+
+    await user.save();
+
+    res.json({
+      status: "success",
+      email: user?.email,
+      _id: user?._id,
+      username: user?.username,
+      role: user?.role,
+      token: generateToken(user),
     });
   } catch (error) {
     res.json({
