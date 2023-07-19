@@ -12,7 +12,25 @@ const app = express();
 app.use(express.json()); // pass incoming data
 
 // Routes
-app.use("/", usersRouter);
+app.use("/api/v1/users", usersRouter);
+
+//! Error middleware
+app.use((err, req, res, next) => {
+  console.log("in middleware");
+  console.log(err);
+
+  const status = err?.status ? err?.status : "failed";
+
+  const message = err?.message;
+
+  const stack = err?.stack;
+
+  res.status(500).json({
+    status,
+    message,
+    stack,
+  });
+});
 
 const server = http.createServer(app);
 //? Start the server
