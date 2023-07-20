@@ -82,10 +82,7 @@ exports.login = asyncHandler(async (req, res) => {
 //@route POST /api/v1/users/profile/:id
 //@access private
 
-exports.getProfile = asyncHandler(async (req, res, next) => {
-  const myErr = new Error("my custom error");
-  return next(myErr);
-
+exports.getProfile = asyncHandler(async (req, res) => {
   const id = req.userAuth.id;
 
   const user = await User.findById(id);
