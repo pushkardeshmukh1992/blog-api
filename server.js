@@ -10,6 +10,7 @@ const {
 } = require("./middlewares/globalErrorHandler");
 const categoriesRouter = require("./routes/categories/categoriesRouter");
 const postsRouter = require("./routes/post/postRouter");
+const commentRouter = require("./routes/comment/commentRouter");
 require("./config/database")();
 
 //!Server
@@ -24,6 +25,7 @@ app.use(express.json()); // pass incoming data
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/categories", categoriesRouter);
 app.use("/api/v1/posts", postsRouter);
+app.use("/api/v1/comments", commentRouter);
 
 //? NNot found middleware
 

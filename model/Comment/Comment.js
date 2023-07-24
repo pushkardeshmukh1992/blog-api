@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const commentSchema = new mongoose.Schema(
   {
-    text: {
+    message: {
       type: String,
       required: true,
     },
@@ -28,6 +28,6 @@ const commentSchema = new mongoose.Schema(
 
 // compile scema to model
 
-const Comment = mongoose.model("Post", commentSchema);
+const Comment = mongoose.model("Comment", commentSchema);
 
 module.exports = Comment;
