@@ -14,7 +14,7 @@ const commentRouter = require("./routes/comment/commentRouter");
 const sendEmail = require("./utils/sendEmail");
 require("./config/database")();
 
-sendEmail("hello@pushkardeshmukh.com", "sdsddss");
+// sendEmail("hello@pushkardeshmukh.com", "sdsddss");
 
 //!Server
 

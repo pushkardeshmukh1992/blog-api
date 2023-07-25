@@ -7,6 +7,7 @@ const asyncHandler = require("express-async-handler");
 
 const User = require("../../model/User/User");
 const generateToken = require("../../utils/generateToken");
+const sendEmail = require("../../utils/sendEmail");
 
 exports.register = asyncHandler(async (req, res) => {
   const { username, password, email } = req.body;
@@ -306,5 +307,33 @@ exports.unFollowingUser = asyncHandler(async (req, res) => {
   res.json({
     status: "success",
     message: "You unfollowed the user successfully",
+  });
+});
+
+//@desc Forgot password
+//@route PUT /api/v1/users/forgot-password
+//@access public
+
+exports.forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  console.log(email);
+  const userFound = await User.findOne({ email });
+
+  if (!userFound) {
+    throw new Error("There's nno email in our system");
+  }
+
+  // create token
+  const resetToken = await userFound.generatePasswordResetToken();
+
+  // resave user
+  await userFound.save();
+
+  // send email
+  sendEmail(userFound.email, resetToken);
+
+  res.status(200).json({
+    message: "Password reset email sent",
   });
 });
