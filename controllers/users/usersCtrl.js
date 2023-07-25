@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
 
 //@desc Register a new user
@@ -335,5 +336,49 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     message: "Password reset email sent",
+    resetToken,
+  });
+});
+
+//@desc Reset Password
+//@route PUT /api/v1/users/reset-password/:resetToken
+//@access public
+
+exports.resetPassword = asyncHandler(async (req, res) => {
+  // get the token from email / params
+
+  const { resetToken } = req.params;
+  const { password } = req.body;
+
+  // convert the token to actual token that has been saved in DB
+
+  const cryptoToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  console.log(cryptoToken);
+
+  // find the user by the crypto token
+
+  const userFound = await User.findOne({
+    passwordResetToken: cryptoToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!userFound) {
+    throw new Error("Password reset token is invalid or has expired");
+  }
+
+  // Update the user password
+  const salt = await bcrypt.genSalt(10);
+  userFound.password = await bcrypt.hash(password, salt);
+  userFound.passwordResetToken = undefined;
+  userFound.passwordResetExpires = undefined;
+  await userFound.save();
+
+  res.json({
+    message: "Password reset successfully",
+    userFound,
   });
 });
