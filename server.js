@@ -11,7 +11,10 @@ const {
 const categoriesRouter = require("./routes/categories/categoriesRouter");
 const postsRouter = require("./routes/post/postRouter");
 const commentRouter = require("./routes/comment/commentRouter");
+const sendEmail = require("./utils/sendEmail");
 require("./config/database")();
+
+sendEmail("hello@pushkardeshmukh.com", "sdsddss");
 
 //!Server
 
