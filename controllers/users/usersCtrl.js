@@ -185,3 +185,37 @@ exports.unblockUser = asyncHandler(async (req, res) => {
     status: "success",
   });
 });
+
+//@desc who viewed my profile
+//@route GET /api/v1/users/profile-viewer/:userProfileId
+//@access private
+
+exports.profileViewers = asyncHandler(async (req, res) => {
+  // find that we want to view his profile
+
+  const userProfileId = req.params.userProfileId;
+
+  const userProfile = await User.findById(userProfileId);
+
+  if (!userProfile) {
+    throw new Error("User to view his profile not found");
+  }
+
+  // find the current user
+  const currentUserId = req.userAuth._id;
+  // check if user has already viewed profile
+
+  if (userProfile?.profileViewers?.includes(currentUserId)) {
+    throw new Error("You have already viewed this profile");
+  }
+
+  // push user to blocked users array
+
+  userProfile?.profileViewers.push(currentUserId);
+  await userProfile.save();
+
+  res.json({
+    message: "You have successfully viewed profile",
+    status: "success",
+  });
+});
