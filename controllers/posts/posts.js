@@ -161,3 +161,53 @@ exports.likePost = asyncHandler(async (req, res) => {
   //   throw new Error("User has already liked this post");
   // }
 });
+
+//@desc Disliking a post
+//@route PUT /api/v1/posts/dislikes/:id
+//@access Private
+
+exports.disLikePost = asyncHandler(async (req, res) => {
+  // get the id of the post
+  const { id } = req.params;
+  // get the loginn user
+  const userId = req.userAuth._id;
+
+  // finnd the post
+  const post = await Post.findById(id);
+
+  if (!post) {
+    throw new Error("Post not found");
+  }
+
+  // Push the user into post dislikes
+  await Post.findByIdAndUpdate(
+    id,
+    {
+      $addToSet: { dislikes: userId },
+    },
+    {
+      new: true,
+    }
+  );
+
+  post.likes = post.likes.filter(
+    (like) => like.toString() !== userId.toString()
+  );
+
+  await post.save();
+
+  res.status(200).json({
+    message: "Post disliked successfully",
+    post,
+  });
+
+  // Remove the user from the dislikes array if present
+
+  // const userHasLiked = post.likes.some(
+  //   (like) => like.toString() === userId.toString()
+  // );
+
+  // if (!userHasLiked) {
+  //   throw new Error("User has already liked this post");
+  // }
+});
