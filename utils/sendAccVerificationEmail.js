@@ -18,7 +18,7 @@ const sendAccVerificationEmail = async (to, resetToken) => {
 
     const message = {
       to,
-      subject: "Account verification",
+      subject: "Account Verification",
       html: `
       <p>http://localhost:3000/reset-password/${resetToken}</p>
       `,
