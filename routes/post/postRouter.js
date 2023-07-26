@@ -6,6 +6,7 @@ const {
   getPost,
   updatePost,
   deletePost,
+  likePost,
 } = require("../../controllers/posts/posts");
 const {
   checkAccountVerification,
@@ -18,5 +19,6 @@ postsRouter.get("/:id", getPost);
 postsRouter.put("/:id", isLoggin, updatePost);
 postsRouter.post("/", isLoggin, checkAccountVerification, createPost);
 postsRouter.delete("/:id", isLoggin, deletePost);
+postsRouter.put("/likes/:id", isLoggin, likePost);
 
 module.exports = postsRouter;
