@@ -9,6 +9,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../../model/User/User");
 const generateToken = require("../../utils/generateToken");
 const sendEmail = require("../../utils/sendEmail");
+const sendAccVerificationEmail = require("../../utils/sendAccVerificationEmail");
 
 exports.register = asyncHandler(async (req, res) => {
   const { username, password, email } = req.body;
@@ -380,5 +381,31 @@ exports.resetPassword = asyncHandler(async (req, res) => {
   res.json({
     message: "Password reset successfully",
     userFound,
+  });
+});
+
+//@desc Send account verification email
+//@route PUT /api/v1/users/account-verification-email
+//@access private
+
+exports.accountVerificationnEmail = asyncHandler(async (req, res) => {
+  // find loginn user email
+  const user = await User.findById(req?.userAuth?._id);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // send the token
+  const token = await user.generateAccVerificationToken();
+
+  // resave
+  await user.save();
+
+  // send email
+  sendAccVerificationEmail(user.email, token);
+
+  res.status(200).json({
+    message: `Account verification email sent to ${user.email}`,
   });
 });
