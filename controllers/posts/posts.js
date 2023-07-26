@@ -18,6 +18,8 @@ exports.createPost = asyncHandler(async (req, res) => {
     throw new Error("Post already exist");
   }
 
+  // check if user account is verified
+
   const post = await Post.create({
     title,
     content,
