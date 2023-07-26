@@ -9,6 +9,7 @@ const {
   likePost,
   disLikePost,
   claps,
+  schedule,
 } = require("../../controllers/posts/posts");
 const {
   checkAccountVerification,
@@ -24,5 +25,6 @@ postsRouter.delete("/:id", isLoggin, deletePost);
 postsRouter.put("/likes/:id", isLoggin, likePost);
 postsRouter.put("/dislikes/:id", isLoggin, disLikePost);
 postsRouter.put("/claps/:id", isLoggin, claps);
+postsRouter.put("/schedule/:postId", isLoggin, schedule);
 
 module.exports = postsRouter;
