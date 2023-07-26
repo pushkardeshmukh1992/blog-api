@@ -200,14 +200,37 @@ exports.disLikePost = asyncHandler(async (req, res) => {
     message: "Post disliked successfully",
     post,
   });
+});
 
-  // Remove the user from the dislikes array if present
+//@desc Clap a post
+//@route PUT /api/v1/posts/claps/:id
+//@access Private
 
-  // const userHasLiked = post.likes.some(
-  //   (like) => like.toString() === userId.toString()
-  // );
+exports.claps = asyncHandler(async (req, res) => {
+  // get the id of the post
+  const { id } = req.params;
+  // get the loginn user
+  const userId = req.userAuth._id;
 
-  // if (!userHasLiked) {
-  //   throw new Error("User has already liked this post");
-  // }
+  // find the post
+  const post = await Post.findById(id);
+
+  if (!post) {
+    throw new Error("Post not found");
+  }
+
+  // implement the claps
+
+  await Post.findByIdAndUpdate(
+    id,
+    {
+      $inc: { claps: 1 },
+    },
+    { new: true }
+  );
+
+  res.status(200).json({
+    message: "Post clapped successfully",
+    post,
+  });
 });
