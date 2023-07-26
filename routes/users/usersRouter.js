@@ -11,6 +11,7 @@ const {
   forgotPassword,
   resetPassword,
   accountVerificationnEmail,
+  verifyAccount,
 } = require("../../controllers/users/usersCtrl");
 const isLoggin = require("../../middlewares/isLoggin");
 
@@ -27,6 +28,7 @@ usersRouter.put(
   isLoggin,
   accountVerificationnEmail
 );
+usersRouter.put("/verify-account/:verifyToken", isLoggin, verifyAccount);
 usersRouter.put("/following/:userToFollowId", isLoggin, followingUser);
 usersRouter.put("/unfollowing/:userIdToUnFollow", isLoggin, unFollowingUser);
 usersRouter.post("/forgot-password", forgotPassword);
