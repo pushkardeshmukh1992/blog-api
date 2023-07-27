@@ -56,14 +56,40 @@ exports.createPost = asyncHandler(async (req, res) => {
 
 //@desc Get all posts
 //@route GET /api/v1/posts
-//@access public
+//@access private
 
 exports.getPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({}).populate("comments");
+  // find all users who have blocked the logged in user
+  const loggedInUserId = req.userAuth._id;
+
+  // get current time
+  const currentTime = new Date();
+
+  const usersBlockingLoggedInUser = await User.find({
+    blockedUsers: loggedInUserId,
+  });
+
+  // Extract the ids of users who have blocked the logged in user
+  const blockingUsersId = usersBlockingLoggedInUser?.map((user) => user?._id);
+  console.log(blockingUsersId);
+
+  const query = {
+    author: { $nin: blockingUsersId },
+    $or: [
+      {
+        scheduledPublished: {
+          $lte: currentTime,
+        },
+        scheduledPublished: null,
+      },
+    ],
+  };
+
+  const posts = await Post.find(query);
 
   res.status(201).json({
     status: "success",
-    message: "Posts successfully created",
+    message: "Posts successfully fetched",
     posts,
   });
 });
