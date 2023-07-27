@@ -85,7 +85,11 @@ exports.getPosts = asyncHandler(async (req, res) => {
     ],
   };
 
-  const posts = await Post.find(query);
+  const posts = await Post.find(query).populate({
+    path: "author",
+    model: "User",
+    select: "email role username",
+  });
 
   res.status(201).json({
     status: "success",
