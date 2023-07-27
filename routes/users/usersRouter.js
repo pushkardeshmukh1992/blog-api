@@ -1,4 +1,6 @@
 const express = require("express");
+const multer = require("multer");
+
 const {
   register,
   login,
@@ -14,10 +16,16 @@ const {
   verifyAccount,
 } = require("../../controllers/users/usersCtrl");
 const isLoggin = require("../../middlewares/isLoggin");
+const storage = require("../../utils/fileUpload");
 
 const usersRouter = express.Router();
 
-usersRouter.post("/register", register);
+// file upload middleware
+const upload = multer({
+  storage,
+});
+
+usersRouter.post("/register", upload.single("profilePicture"), register);
 usersRouter.post("/login", login);
 usersRouter.get("/profile", isLoggin, getProfile);
 usersRouter.put("/block/:userIdToBlock", isLoggin, blockUser);
