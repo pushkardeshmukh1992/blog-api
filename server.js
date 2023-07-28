@@ -1,4 +1,5 @@
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config();
 
 const http = require("http");
@@ -23,6 +24,9 @@ const app = express();
 // middlewares
 
 app.use(express.json()); // pass incoming data
+
+// cors middleware
+app.use(cors());
 
 // Routes
 app.use("/api/v1/users", usersRouter);
