@@ -25,7 +25,7 @@ const upload = multer({
   storage,
 });
 
-usersRouter.post("/register", upload.single("profilePicture"), register);
+usersRouter.post("/register", register);
 usersRouter.post("/login", login);
 usersRouter.get("/profile", isLoggin, getProfile);
 usersRouter.put("/block/:userIdToBlock", isLoggin, blockUser);

@@ -26,7 +26,6 @@ exports.register = asyncHandler(async (req, res) => {
     username,
     email,
     password,
-    profilePicture: req?.file?.path,
   });
 
   //! hash password
