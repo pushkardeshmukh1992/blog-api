@@ -12,6 +12,7 @@ const {
   disLikePost,
   claps,
   schedule,
+  getPublicPosts,
 } = require("../../controllers/posts/posts");
 const {
   checkAccountVerification,
@@ -26,6 +27,8 @@ const upload = multer({
 });
 
 postsRouter.get("/", isLoggin, getPosts);
+postsRouter.get("/public", getPublicPosts);
+
 postsRouter.get("/:id", getPost);
 postsRouter.put("/:id", isLoggin, updatePost);
 postsRouter.post(

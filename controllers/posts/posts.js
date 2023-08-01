@@ -99,6 +99,22 @@ exports.getPosts = asyncHandler(async (req, res) => {
   });
 });
 
+//@desc  Get only 4 posts
+//@route GET /api/v1/posts/public
+//@access PUBLIC
+
+exports.getPublicPosts = asyncHandler(async (req, res) => {
+  const posts = await Post.find({})
+    .sort({ createdAt: -1 })
+    .limit(4)
+    .populate("category");
+  res.status(201).json({
+    status: "success",
+    message: "Posts successfully fetched",
+    posts,
+  });
+});
+
 //@desc Get single post
 //@route GET /api/v1/post/:id
 //@access public
